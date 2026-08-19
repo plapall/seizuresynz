@@ -1,0 +1,275 @@
+:root{
+  --bg:#0d1420;
+  --card:#151f2e;
+  --card-2:#1c2837;
+  --line:#26344a;
+  --text:#eef3f8;
+  --text-dim:#8ea0b5;
+  --red-1:#ffb199; --red-2:#ff7a5c; --red-3:#f0472f; --red-4:#d8331f; --red-5:#c22a19;
+  --green-1:#e9f7d8; --green-2:#7ae07a; --green-3:#4ac965; --green-4:#2c9e47;
+  --accent:#4f9e2c;
+  --radius:22px;
+  --red: var(--red-3);
+  --red-dark: var(--red-5);
+  --yellow:#ffd23f;
+  --gold:#e0c26b;
+  --ink:#4a1a0f;
+  --purple-1:#9089ab; --purple-2:#5b5478; --purple-3:#2e2547;
+  --purple-light-1:#c7bfe0; --purple-light-2:#9a8fc2;
+}
+*{box-sizing:border-box; margin:0; padding:0;}
+html,body{min-height:100%;}
+ 
+body{
+  font-family:'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height:100vh; padding:24px;
+}
+.phone{
+  width:100%; height:100dvh;
+  margin:0;
+  color:var(--text);
+  border-radius:0; overflow:hidden; position:fixed; inset:0;
+  box-shadow:none;
+  display:flex; flex-direction:column;
+  background: url(image.jpg);
+  background-size: cover;      
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* เก็บกรอบมือถือไว้เฉพาะตอนดูบนจอคอมพิวเตอร์ (จอกว้าง) */
+@media (min-width:700px){
+  .phone{
+    width:393px; height:852px;
+    position:relative; inset:auto;
+    margin:24px auto;
+    border-radius:40px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 8px #000;
+  }
+}
+.screen{
+  position:absolute; inset:0; display:none;
+  flex-direction:column; padding:0 22px 0;
+  overflow:hidden;
+}
+.screen.active{display:flex;}
+#page-input .content{justify-content:center; padding-top:48px;}
+ 
+/* ---------- shared ---------- */
+.content{flex:1; display:flex; flex-direction:column;}
+.title{font-size:22px; font-weight:700; letter-spacing:.2px; margin-bottom:18px;}
+.bottom-nav{
+  flex-shrink:0; margin:0 -22px 0; padding:16px 40px 22px;
+  display:flex; justify-content:space-between; align-items:center;
+  background:linear-gradient(180deg, rgba(13,20,32,0) 0%, var(--bg) 40%);
+  border-top:1px solid var(--line);
+}
+.bottom-nav svg{width:24px; height:24px; color:var(--text-dim);}
+.bottom-nav svg:hover{color:var(--text); cursor:pointer;}
+.topbar{display:flex; align-items:center; padding:18px 0 6px;}
+.back-arrow{
+  font-size:30px; line-height:1; color:var(--text-dim); cursor:pointer;
+  width:36px; height:36px; display:flex; align-items:center; justify-content:center;
+}
+.back-arrow:hover{color:var(--text);}
+ 
+/* ---------- PAGE 1: input ---------- */
+#reading-input{
+  width:100%; min-height:150px; margin-top:6px;
+  background:var(--card); border:1px solid var(--line); border-radius:16px;
+  color:var(--text); font-size:14px; padding:14px; resize:vertical;
+  font-family:'Consolas', monospace; line-height:1.5;
+}
+#reading-input::placeholder{color:var(--text-dim);}
+#reading-input:focus{outline:none; border-color:var(--accent);}
+.count-row{
+  display:flex; justify-content:space-between; margin-top:10px;
+  font-size:13px; color:var(--text-dim);
+}
+#count-val{color:var(--text); font-weight:600; font-variant-numeric:tabular-nums;}
+.sample-btns{display:flex; gap:10px; margin-top:16px;}
+.sample-btn{
+  flex:1; background:var(--card-2); border:1px solid var(--line); color:var(--text);
+  padding:11px 8px; border-radius:12px; font-size:12.5px; cursor:pointer;
+  transition:.15s;
+}
+.sample-btn:hover{border-color:var( --text);}
+.analyze-btn, .dark-btn{
+  margin-top:22px; background:#5b3fa0; color:#fff; border:none;
+  padding:15px; border-radius:14px; font-size:15px; font-weight:700;
+  cursor:pointer; letter-spacing:.3px; transition:.15s;
+}
+.analyze-btn:hover{filter:brightness(1.12);}
+.analyze-btn:disabled{opacity:.4; cursor:not-allowed;}
+.status-note{
+  margin-top:14px; font-size:12.5px; color:var(--text-dim); text-align:center;
+  min-height:16px;
+}
+ 
+/* ---------- PAGE: result (alert / stable) ---------- */
+#page-result .content{align-items:center; justify-content:center; text-align:center; gap:20px; padding-top:10px;}
+.pentagon-holder{position:relative; width:280px; height:289px;}
+.pentagon-btn{
+  background:none; border:none; width:100%; height:100%; padding:0; cursor:pointer;
+}
+.pentagon-btn svg{width:100%; height:100%; filter:drop-shadow(0 10px 30px rgba(0,0,0,.5));}
+.glow-red{filter:drop-shadow(0 0 34px rgba(240,71,47,.55));}
+.glow-green{filter:drop-shadow(0 0 34px rgba(44, 158, 124, 0.5));}
+.pentagon-label{
+  position:absolute; top:50%; left:50%; transform:translate(-50%,-50%);
+  font-size:32px; font-weight:550; letter-spacing:2px; pointer-events:none;
+}
+.alert-text{color:#5c0f06;}
+.stable-text{color:#254f10;}
+.result-caption{font-size:14px; color:var(--text-dim); max-width:260px;}
+ 
+.pill{
+  border:none; border-radius:999px; padding:15px 70px; font-size:13.5px;
+  font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+  transition:.15s;
+}
+.pill-calling{background:#ffd9d0; color:#8f2c1f;white-space:nowrap}
+.pill-calling svg{width:16px; height:16px;}
+.pill-stop{background:var(--card-2); color:var(--text); border:1px solid var(--line);}
+.pill-stop:hover{border-color:var(--red-3); color:var(--red-2);}
+.pill-aura{background: #e0c26b; color:var(--text-dim); border:1px solid #b8873a;}
+.pill-aura:hover{color:var(--text); border-color:var(--accent);}
+.pill-row{display:flex; flex-direction:column; gap:12px; align-items:center; margin-top:6px;}
+ 
+/* ---------- PAGE 3: pulse delivery ---------- */
+#page-pulse{background:linear-gradient(180deg, #f3a695 0%, var(--red) 55%, var(--red-dark) 100%);}
+#page-pulse .content{align-items:center; justify-content:center; text-align:center; gap:0;}
+.pulse-title{color: rgba(249, 255, 72, 0.85); font-size:26px; font-weight:600; text-align:center; line-height:1.3; margin-bottom:26px;
+text-shadow:0 0 18px rgba(194,42,25,.85), 0 3px 6px rgba(0,0,0,.35);}
+.pie-wrap{width:250px; height:250px; position:relative; display:flex; align-items:center; justify-content:center;}
+#pie{
+  width:250px; height:250px; border-radius:50%;
+  background:conic-gradient(var(--yellow) 0deg, var(--yellow) 359.9deg, transparent 360deg);
+  box-shadow:0 10px 30px rgba(0,0,0,0.25);
+  display:flex; align-items:center; justify-content:center;
+  transition:background 0.2s linear;
+}
+.pie-label{font-size:18px; font-weight:700; color:var(--ink);}
+#page-pulse .stop-btn{margin-top:30px; width:100%; background:var(--card-2); border:1px solid var(--red-3); color:var(--red-2);}
+#page-pulse .stop-btn:hover{background:var(--red-5); color:#fff;}
+ 
+#page-pulse .bottom-nav{
+  display:flex; justify-content:space-around; align-items:center; padding:16px 30px 22px;
+  color:var(--ink); background:none; border-top:none;
+}
+#page-pulse .bottom-nav svg{width:24px; height:24px; color:var(--ink);}
+ 
+/* ---------- breathing screens ---------- */
+#inhale-screen, #exhale-screen{text-align:center; gap:0; background: url(hale.jpg);
+  background-size: cover;      
+  background-position: center;
+  background-repeat: no-repeat;
+}
+#inhale-screen .content, #exhale-screen .content{
+  flex:1; display:flex; flex-direction:column; align-items:center;
+  justify-content:center; width:100%;
+}
+#inhale-screen .title, #exhale-screen .title{font-size:30px; font-weight:600; margin:0 0 30px;}
+.box{
+  width:286px; height:364px; border-radius:0; border:2px solid var(--line);
+  display:flex; margin:0 auto; overflow:hidden;
+}
+.box .segment{flex:1; border-top:2px solid var(--bg);}
+.box .segment:last-child{border-top:none;}
+.green-box{flex-direction:column-reverse;}
+.red-box{flex-direction:column;}
+.green-box .segment{background:linear-gradient(180deg, var(--green-2), var(--green-4)); opacity:0;}
+.red-box .segment{background:linear-gradient(180deg, var(--red-2), var(--red-4)); opacity:0;}
+.seconds-label{margin-top:18px; font-size:15px; color:var(--text-dim); font-weight:600;}
+.pill-sound{
+  margin-top:30px; background:var(--card-2); border:1px solid var(--line);
+  color:var(--text); border-radius:999px; padding:13px 24px; font-size:13.5px;
+  font-weight:600; cursor:pointer; display:flex; align-items:center; gap:10px;
+}
+.pill-sound:hover{border-color:var(--accent);}
+.play-icon{font-size:11px;}
+ 
+/* ================= NEW: PAGE 0 — HOME ================= */
+#page-home{
+  background: url(firstone.jpg);
+    background-size: cover;      
+    background-position: center;
+    background-repeat: no-repeat;
+  }
+.home-content{padding-top:125px; gap:48px;}
+.home-header{display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:2px;}
+.home-header .title{font-size:34px; font-weight:800; margin-bottom:0; text-shadow:0 2px 10px rgba(0,0,0,.3);}
+.home-icon{width:64px; height:44px; display:flex; align-items:center; justify-content:center; gap:2px;}
+.home-icon svg{width:26px; height:36px;}
+ 
+.home-section-label{font-size:19px; font-weight:700; color:#e7defc; margin-bottom:10px;}
+.home-card{
+  width:100%; height:150px; border-radius:20px; overflow:hidden; position:relative;
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 14px 30px rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.18);
+  cursor:pointer; transition:.15s; text-align:left;
+}
+.home-card:hover{transform:translateY(-2px); box-shadow:0 18px 36px rgba(0,0,0,.42);}
+.home-card:active{transform:translateY(0px) scale(.99);}
+.home-card svg{width:56px; height:56px; color:#fff; opacity:.9;}
+.risk-card{background:url(pond.jpg); background-size: cover;}
+.diary-card{background:url(phuwin.jpg); background-size: cover; }
+.diary-card svg{color:#3c2f66;}
+.doctor-card{background:url(nanon.jpg); background-size: cover; cursor:default;}
+.doctor-card:hover{transform:none; box-shadow:0 14px 30px rgba(0,0,0,.35);}
+ 
+#page-home .bottom-nav{
+  background:linear-gradient(180deg, rgba(46,37,71,0) 0%, var(--purple-3) 45%);
+  border-top:1px solid rgba(255,255,255,.15);
+}
+#page-home .bottom-nav svg{color:rgba(255,255,255,.65);}
+#page-home .bottom-nav svg:hover{color:#fff;}
+ 
+/* ================= NEW: PAGE — SEIZURE DIARY ================= */
+ 
+.diary-content{padding-top:40px; align-items:center; gap:0;}
+.diary-content .title{align-self:flex-start; color:#2e2547; font-size:28px; text-shadow:0 2px 8px rgba(0,0,0,.15); margin-bottom:26px;}
+.diary-card-panel{
+  background:#f4f2f8; border-radius:24px; padding:22px 20px; width:100%;
+  box-shadow:0 18px 44px rgba(0,0,0,.25);
+}
+.diary-nav-row{display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:10px;}
+.diary-arrow{font-size:22px; color:#4a4460; cursor:pointer; width:26px; text-align:center; user-select:none;}
+.diary-arrow:hover{color:#2e2547;}
+.diary-selects{display:flex; gap:10px; flex:1; justify-content:center;}
+.diary-selects select{
+  border:1px solid #cfc7dc; border-radius:10px; padding:7px 10px; font-size:14px;
+  color:#2c2740; background:#fff; font-family:inherit;
+}
+.diary-grid{display:grid; grid-template-columns:repeat(7,1fr); gap:4px 2px; text-align:center;}
+.diary-dow{font-size:12px; color:#8a8299; font-weight:700; padding-bottom:8px;}
+.diary-day{
+  font-size:14px; padding:10px 0; border-radius:50%; cursor:pointer; color:#2c2740;
+  display:flex; align-items:center; justify-content:center; aspect-ratio:1/1;
+}
+.diary-day.empty{cursor:default;}
+.diary-day.marked{background:#231f30; color:#fff; font-weight:700;}
+.diary-day:not(.empty):not(.marked):hover{background:#e3ddee;}
+ 
+.diary-add-btn{
+  width:56px; height:56px; border-radius:50%; border:2px solid #5b3fa0; background:transparent;
+  color:#5b3fa0; font-size:26px; margin:26px auto 16px; display:flex; align-items:center;
+  justify-content:center; cursor:pointer; align-self:center;
+}
+.diary-add-btn:hover{background:rgba(91,63,160,.1);}
+.diary-save-btn{
+  width:100%; background:#5b3fa0; color:#fff; border:none; border-radius:999px;
+  padding:16px; font-size:16px; font-weight:700; cursor:pointer;
+}
+.diary-save-btn:hover{filter:brightness(1.08);}
+.diary-save-note{
+  text-align:center; font-size:12.5px; color:#4a4460; min-height:16px; margin-top:10px;
+}
+#page-diary .bottom-nav{
+  background:linear-gradient(180deg, rgba(199,191,224,0) 0%, var(--purple-light-2) 45%);
+  border-top:1px solid rgba(255,255,255,.3);
+  margin-top:22px;
+}
+#page-diary .bottom-nav svg{color:#4a4460;}
+#page-diary .bottom-nav svg:hover{color:#2e2547;}

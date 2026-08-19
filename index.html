@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Seizure Sync</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="phone">
+ 
+  <!-- ============ PAGE 0: HOME  ============ -->
+  <section class="screen active" id="page-home">
+    <div class="content home-content">
+      <div class="home-header">
+        <div class="home-icon" aria-hidden="true">
+        </div>
+      </div>
+      <div>
+        <button class="home-card risk-card" onclick="goTo('page-input')" aria-label="Go to EEG reading input"></button>
+      </div>
+      <div>
+        <button class="home-card diary-card" onclick="goTo('page-diary'); renderDiary();" aria-label="Go to seizure diary"></button>
+      </div>
+      <div>
+        <div class="home-card doctor-card" aria-label="Online doctor (coming soon)"></div>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ PAGE 1: INPUT ============ -->
+  <section class="screen" id="page-input">
+    <div class="content">
+      <div class="title">EEG Reading Input</div>
+      <textarea id="reading-input" placeholder="e.g. 1,2,3,4,5,6,1,2,3,4,5,6, ..."></textarea>
+      <div class="count-row"><span>Values entered:</span><span id="count-val">0 / 178</span></div>
+      <div class="sample-btns">
+        <button class="sample-btn" onclick="fillSample('normal')">Sample: Normal</button>
+        <button class="sample-btn" onclick="fillSample('seizure')">Sample: Seizure</button>
+      </div>
+      <button class="analyze-btn" id="analyze-btn" onclick="runAnalysis()">Analysis</button>
+      <div class="status-note" id="status-note"></div>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ PAGE 2: (alert / stable) ============ -->
+  <section class="screen" id="page-result">
+    <div class="content">
+      <div class="pentagon-holder" id="pentagon-holder">
+        <button class="pentagon-btn" aria-label="Status" id="pentagon-btn" onclick="handlePentagonClick()">
+          <svg viewBox="0 0 320 330">
+            <defs>
+              <radialGradient id="redGrad" cx="50%" cy="45%" r="65%">
+                <stop offset="0%" stop-color="#ffb199"/>
+                <stop offset="25%" stop-color="#ff7a5c"/>
+                <stop offset="55%" stop-color="#f0472f"/>
+                <stop offset="80%" stop-color="#d8331f"/>
+                <stop offset="100%" stop-color="#c22a19"/>
+              </radialGradient>
+             <radialGradient id="greenGrad" cx="50%" cy="45%" r="65%">
+                <stop offset="0%" stop-color="#d7ecd9"/>
+                <stop offset="30%" stop-color="#8fc79a"/>
+                <stop offset="60%" stop-color="#509c5c"/>
+                <stop offset="100%" stop-color="#3a7b45"/>
+              </radialGradient>
+            </defs>
+            <path id="pentagon-path" fill="url(#greenGrad)" d="M 139.8,300.3
+              L 32.8,222.6
+              Q 12.6,207.9 20.3,184.1
+              L 61.2,58.4
+              Q 68.9,34.6 93.9,34.6
+              L 226.1,34.6
+              Q 251.1,34.6 258.8,58.4
+              L 299.7,184.1
+              Q 307.4,207.9 287.2,222.6
+              L 180.2,300.3
+              Q 160,315 139.8,300.3
+              Z"/>
+          </svg>
+        </button>
+        <span class="pentagon-label stable-text" id="pentagon-label">STABLE</span>
+      </div>
+ 
+      <p class="result-caption" id="result-caption">No abnormal signal detected. Monitoring continues.</p>
+ 
+      <div class="pill-row" id="pill-row">
+        <!-- populated dynamically -->
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ PAGE 3: PULSE DELIVERY ============ -->
+  <section class="screen" id="page-pulse">
+    <div class="content">
+      <div class="pulse-title">Delivering<br>Electrical Pulses</div>
+      <div class="pie-wrap"><div id="pie"><div class="pie-label" id="pie-label">Delivering...</div></div></div>
+      <button class="dark-btn stop-btn" onclick="stopPulse()">STOP (stable)</button>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ BREATHING: INHALE ============ -->
+  <section class="screen" id="inhale-screen">
+    <div class="topbar"><span class="back-arrow" onclick="stopBreathing()">&#8249;</span></div>
+    <div class="content">
+      <h1 class="title">Inhale...</h1>
+      <div class="box green-box" id="inhale-box">
+        <div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div>
+      </div>
+      <p class="seconds-label">4 second</p>
+      <button class="pill-sound" onclick="stopBreathing()"><span class="play-icon">&#9658;</span>stop the sound</button>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ BREATHING: EXHALE ============ -->
+  <section class="screen" id="exhale-screen">
+    <div class="topbar"><span class="back-arrow" onclick="stopBreathing()">&#8249;</span></div>
+    <div class="content">
+      <h1 class="title">Exhale...</h1>
+      <div class="box red-box" id="exhale-box">
+        <div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div><div class="segment"></div>
+      </div>
+      <p class="seconds-label">6 second</p>
+      <button class="pill-sound" onclick="stopBreathing(); document.getElementById('bgAudio').pause();"><span class="play-icon">&#9658;</span>stop the sound</button>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+  <!-- ============ PAGE: SEIZURE DIARY  ============ -->
+  <section class="screen" id="page-diary">
+    <div class="content diary-content">
+      <div class="title">Seizure Diary</div>
+      <div class="diary-card-panel">
+        <div class="diary-nav-row">
+          <span class="diary-arrow" onclick="diaryPrevMonth()">&#8249;</span>
+          <div class="diary-selects">
+            <select id="diary-month" onchange="diaryMonthChange()"></select>
+            <select id="diary-year" onchange="diaryYearChange()"></select>
+          </div>
+          <span class="diary-arrow" onclick="diaryNextMonth()">&#8250;</span>
+        </div>
+        <div class="diary-grid" id="diary-grid"><!-- populated by JS --></div>
+      </div>
+      <button class="diary-add-btn" onclick="addDiaryEntry()" aria-label="Add entry for today">+</button>
+      <button class="diary-save-btn" onclick="saveDiary()">save</button>
+      <div class="diary-save-note" id="diary-save-note"></div>
+    </div>
+    <div class="bottom-nav">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" onclick="goHome()" style="cursor:pointer;"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+    </div>
+  </section>
+ 
+</div>
+
+<audio id="bgAudio" src="Mozart.mp3"></audio> 
+<script src="script.js"></script>
+</body>
+</html>
+ 
