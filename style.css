@@ -191,7 +191,7 @@ text-shadow:0 0 18px rgba(194,42,25,.85), 0 3px 6px rgba(0,0,0,.35);}
  
 /* ================= NEW: PAGE 0 — HOME ================= */
 
-.home-content{padding-top:125px; gap:48px;
+.home-content{padding-top:110px; gap:48px;
   margin: 0 -22px 0; padding:125px 22px 0;
   background: url(firstone.jpg);
   background-size: cover;      
