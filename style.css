@@ -191,6 +191,7 @@ text-shadow:0 0 18px rgba(194,42,25,.85), 0 3px 6px rgba(0,0,0,.35);}
  
 /* ================= NEW: PAGE 0 — HOME ================= */
 #page-home{
+  background-attachment: local;
   background: url(firstone.jpg);
     background-size: cover;      
     background-position: center;
