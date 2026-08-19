@@ -36,7 +36,7 @@ body{
   background-position: center;
   background-repeat: no-repeat;
 }
-
+ 
 /* เก็บกรอบมือถือไว้เฉพาะตอนดูบนจอคอมพิวเตอร์ (จอกว้าง) */
 @media (min-width:700px){
   .phone{
@@ -190,13 +190,19 @@ text-shadow:0 0 18px rgba(194,42,25,.85), 0 3px 6px rgba(0,0,0,.35);}
 .play-icon{font-size:11px;}
  
 /* ================= NEW: PAGE 0 — HOME ================= */
-#page-home{
-  background: url(firstone.jpg);
-    background-size: cover;      
-    background-position: center;
-    background-repeat: no-repeat;
-  }
-.home-content{padding-top:125px; gap:48px;}
+
+.home-content{padding-top:125px; gap:48px;
+margin: 0 -22px 0; padding:125px 22px 0;
+background: url(firstone.jpg);
+background-size: cover;      
+background-position: center;
+background-repeat: no-repeat;
+flex: 1 1 auto;
+min-height: 0;
+overflow-y: auto;
+overflow-x: hidden;
+-webkit-overflow-scrolling: touch;
+}
 .home-header{display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:2px;}
 .home-header .title{font-size:34px; font-weight:800; margin-bottom:0; text-shadow:0 2px 10px rgba(0,0,0,.3);}
 .home-icon{width:64px; height:44px; display:flex; align-items:center; justify-content:center; gap:2px;}
