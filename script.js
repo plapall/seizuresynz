@@ -53,43 +53,23 @@ function fillSample(kind){
   document.getElementById('status-note').textContent = '';
 }
  
-async function runAnalysis(){
+function runAnalysis(){
   const vals = parseValues().filter(v => !isNaN(v));
   const note = document.getElementById('status-note');
-  const analyzeBtn = document.getElementById('analyze-btn');
-
-  if(vals.length !== REQUIRED_COUNT){
-    note.textContent = `Need exactly ${REQUIRED_COUNT} values (entered ${vals.length})`;
+  if(vals.length < REQUIRED_COUNT){
+    note.textContent = `Need at least ${REQUIRED_COUNT} values (entered ${vals.length})`;
     note.style.color = 'var(--red-2)';
     return;
   }
-  
   note.style.color = 'var(--text-dim)';
-  note.textContent = 'Running model inference...';
-  if (analyzeBtn) analyzeBtn.disabled = true;
-
-  try {
-    const response = await fetch('http://127.0.0.1:5000/predict', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ features: vals })
-    });
-
-    const data = await response.json();
-
-    if (!response.ok) {
-      throw new Error(data.detail || data.error || 'Server error occurred');
-    }
-
-    note.textContent = '';
-    showResult(data.is_seizure);
-
-  } catch (err) {
-    note.textContent = `API Error: ${err.message}`;
-    note.style.color = 'var(--red-2)';
-  } finally {
-    if (analyzeBtn) analyzeBtn.disabled = false;
-  }
+  note.textContent = '';
+ 
+  const mean = vals.reduce((a,b)=>a+b,0)/vals.length;
+  const variance = vals.reduce((a,b)=>a+(b-mean)*(b-mean),0)/vals.length;
+  const std = Math.sqrt(variance);
+  const isSeizure = std > 60;
+ 
+  showResult(isSeizure);
 }
  
 /* ---------- PAGE 2: result ---------- */
@@ -132,7 +112,7 @@ function showResult(isSeizure){
     label.className = 'pentagon-label stable-text';
     label.textContent = 'STABLE';
     caption.textContent = '';
-    pillRow.innerHTML = `<button class="pill pill-aura" onclick="document.getElementById('bgAudio').play().catch(e => console.log(e)); startBreathing()">feeling aura?</button>`;
+    pillRow.innerHTML = `<button class="pill pill-aura" onclick="documentbgAudio('Mozart.mp3').play().catch(e => console.log(e)); startBreathing()">feeling aura?</button>`;
   }
   goTo('page-result');
 }
