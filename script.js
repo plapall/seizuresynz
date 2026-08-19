@@ -112,7 +112,7 @@ function showResult(isSeizure){
     label.className = 'pentagon-label stable-text';
     label.textContent = 'STABLE';
     caption.textContent = '';
-    pillRow.innerHTML = `<button class="pill pill-aura" onclick="documentbgAudio('Mozart.mp3').play().catch(e => console.log(e)); startBreathing()">feeling aura?</button>`;
+    pillRow.innerHTML = `<button class="pill pill-aura" onclick="document.getElementById('bgAudio').play().catch(e => console.log(e)); startBreathing()">feeling aura?</button>`;
   }
   goTo('page-result');
 }
